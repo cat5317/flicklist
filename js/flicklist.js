@@ -29,7 +29,7 @@ function discoverMovies(callback) {
 
 			// TODO 2
 			// update the model, setting its .browseItems property equal to the movies we recieved in the response
-			model.browseItems = JSON.parse(response);
+			model.browseItems = response.results;
 			// invoke the callback function that was passed in.
 			callback();
 		}
@@ -43,30 +43,41 @@ function discoverMovies(callback) {
 function render() {
   // TODO 7
   // clear everything from both lists
-    document.getElementById("ul-watch").innerHTML = "";
-    document.getElementById("ul-browse").innerHTML = "";
+  //  document.getElementById("ul-watch").innerHTML = "";
+  //  document.getElementById("ul-browse").innerHTML = "";
+  $("#ul-browse").empty();
+  $("#ul-watch").empty();
+
   // TODO 6
   // for each movie on the user's watchlist, insert a list item into the <ul> in the watchlist section
-    var ulWatch = document.getElementById("ul-watch")
-    var li = document.createElement("li");
-    ulWatch.appendChild(li);
+  model.watchlistItems.forEach(function(movie) {
+    var addToList = $("<li></li>").text(movie.title);
+    $("#section-watchlist ul").append(addToList);
+  });
 
   // for each movie on the current browse list,
   model.browseItems.forEach(function(movie) {
 		// TODO 3
 		// insert a list item into the <ul> in the browse section
-    var ulBrowse = document.getElementById("ul-browse")
-    var li = document.createElement("li");
-    ulBrowse.appendChild(li);
+    var movieTitle = $("<p></p>").text(movie.title);
+    var addToList = $("<li></li>").append(movieTitle);
+    $("#section-browse ul").append(addToList);
+
+
+  //  var ulBrowse = document.getElementById("ul-browse")
+  //  var li = document.createElement("li");
+  //  ulBrowse.appendChild(li);
 
 		// TODO 4
 		// the list item should include a button that says "Add to Watchlist"
-    var button = document.createElement("button");
-    button.innerHTML = "Add to Watchlist";
-    document.body.appendChild(button);
+    var button = $("<button></button>").text("Add to Watchlist").click(function() {
+
 		// TODO 5
 		// when the button is clicked, this movie should be added to the model's watchlist and render() should be called again
-    button.addEventListener("click", render());
+      model.watchlistItems.push(movie);
+      render();
+    });
+    addToList.append(button);
   });
 
 }
